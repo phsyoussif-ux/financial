@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تحدّي الأذكياء الماليين | Financial Challenge</title>
+<style>
+:root{--ac:#e0b04a;--bg:#07152b;--card:#0f2a4d;--line:#2b4f82}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#10305c 0,var(--bg) 60%);color:#f4f1e8;font:700 clamp(16px,1.6vw,26px)/1.5 "Segoe UI","Noto Naskh Arabic","Noto Sans Arabic",Tahoma,Arial,sans-serif}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.btn{background:var(--ac);color:#07152b;border:0;border-radius:12px;padding:.6em 1.6em;font-weight:800}
+.btn.green{background:#2ecc8f}
+.ghost{background:transparent;border:2px solid var(--line);border-radius:10px;padding:.2em .9em;font-size:.75em}
+.ghost[data-armed]{border-color:#ff8a5c;color:#ff8a5c}
+#snd{position:fixed;top:10px;left:10px;z-index:20;background:#0e2342;border:2px solid var(--line);border-radius:10px;padding:.2em .9em;font-size:.75em}
+#setup,#final{max-width:900px;margin:0 auto;padding:6vh 4vw;text-align:center}
+h1{font-size:clamp(30px,4.5vw,64px);margin:.2em 0;color:var(--ac)}
+.sub{opacity:.8;margin:0 0 1.5em}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1em}
+.fields input,#tm{width:100%;background:#0e2342;border:2px solid var(--line);border-radius:12px;padding:.6em 1em;text-align:center}
+#tm{width:8em}
+#msg{color:#ff8a5c;min-height:1.6em}
+#game{display:none;min-height:100vh;flex-direction:column;gap:1.2vh;padding:1vw 3vw 1.5vw}
+.top{display:flex;align-items:center;gap:1.5rem;padding-left:11rem}
+.top .ghost{margin-right:auto}
+#ph{color:var(--ac)}
+#banner{text-align:center;line-height:1.1}
+#banner small{display:block;opacity:.75;font-size:.9em}
+#tn{display:block;font-size:clamp(36px,6.5vw,112px);color:var(--ac);font-weight:900;text-shadow:0 0 30px rgba(224,176,74,.35)}
+#tn.pop,#ob.pop{animation:pop .55s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
+#qc{background:var(--card);border:2px solid rgba(255,255,255,.12);border-radius:18px;padding:2.2vh 3vw;text-align:center;font-size:clamp(22px,2.8vw,50px);line-height:1.5;display:flex;flex-direction:column;justify-content:center;min-height:16vh}
+#pt{font-size:.4em;opacity:.7;margin-top:.3em;color:var(--ac)}
+.tm{display:flex;align-items:center;gap:1rem}
+.bar{flex:1;height:12px;background:rgba(255,255,255,.1);border-radius:8px;overflow:hidden}
+#tb{height:100%;width:100%;background:var(--ac)}#tb.low{background:#ff5a5a}
+#tt{min-width:2.2em;text-align:center;font-size:1.4em}
+#opts{display:grid;grid-template-columns:1fr 1fr;gap:1.2vw}
+.opt{background:#12335e;border:2px solid var(--line);border-radius:14px;padding:1em;font-size:clamp(18px,2vw,34px);text-align:center;line-height:1.45}
+.opt:hover:not(:disabled){border-color:var(--ac);background:#17407a}
+.opt:disabled{cursor:default;color:#d9dfe8}
+.opt.ok{background:#12805a;border-color:#2ecc8f;color:#fff}
+.opt.bad{background:#8a2a3a;border-color:#ff6b7f;color:#fff}
+#fb{text-align:center;display:none;min-height:11vh}
+#fm{font-size:1.5em;font-weight:900}
+#fm.good{color:#2ecc8f}#fm.miss{color:#ff8a5c}
+#fe{max-width:1100px;margin:.2em auto .6em;opacity:.95}
+#fb .btn{margin:0 .4em}
+#bd{display:flex;flex-wrap:wrap;gap:1vw;justify-content:center;margin-top:auto}
+.chip{background:#0e2342;border:2px solid transparent;border-radius:14px;padding:.4em 1.2em;display:flex;gap:.9em;align-items:baseline;transition:transform .3s,background .3s;font-size:1.15em}
+.chip b{color:var(--ac);font-size:1.5em}
+.chip.on{border-color:var(--ac);background:#17396a;transform:scale(1.08)}
+#ov{position:fixed;inset:0;z-index:10;background:rgba(5,12,28,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s}
+#ov.show{opacity:1;pointer-events:auto}
+#ol{font-size:clamp(22px,3vw,50px);opacity:.8}
+#ob{font-size:clamp(44px,10vw,170px);font-weight:900;color:var(--ac);line-height:1.15;padding:0 4vw;text-shadow:0 0 40px rgba(224,176,74,.4)}
+#os{font-size:clamp(18px,2.2vw,36px);opacity:.75}
+#wn{font-size:clamp(34px,6vw,90px);color:var(--ac);margin:.2em 0}
+.row{display:flex;justify-content:space-between;background:#0e2342;border-radius:14px;padding:.5em 1.4em;margin:.5em 0;font-size:1.4em}
+.row.first{border:2px solid var(--ac)}
+.cf{position:fixed;top:-20px;width:10px;height:16px;z-index:5;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media(max-width:700px){#opts,.fields{grid-template-columns:1fr}.top{padding-left:0;flex-wrap:wrap;padding-top:2.4rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<button id="snd" type="button">الصوت: عالٍ</button>
+
+<section id="setup">
+<h1>تحدّي الأذكياء الماليين</h1>
+<p class="sub">Financial Challenge | الثقافة المالية، الصف الثامن، وحدة الاستهلاك</p>
+<p>أدخل أسماء 3 إلى 5 فرق</p>
+<div class="fields" id="fields"></div>
+<p>وقت السؤال بالثواني (اختياري): <input id="tm" type="number" min="5" max="180" placeholder="تلقائي"></p>
+<p id="msg"></p>
+<button class="btn" id="start" type="button">ابدأ اللعبة</button>
+</section>
+
+<section id="game">
+<div class="top"><b id="ph"></b><span id="pg"></span><button class="ghost" id="endb" type="button">إنهاء المسابقة</button></div>
+<div id="banner"><small>الدور الآن</small><b id="tn"></b></div>
+<div id="qc"><div id="qt"></div><div id="pt"></div></div>
+<div class="tm"><div class="bar"><div id="tb"></div></div><span id="tt"></span></div>
+<div id="opts"></div>
+<div id="fb">
+<div id="fm"></div><div id="fe"></div>
+<div id="fh"></div>
+<button class="btn green" id="vy" type="button">اعتماد الإجابة</button>
+<button class="ghost" id="vn" type="button">عدم الاعتماد</button>
+<button class="btn" id="nx" type="button">السؤال التالي</button>
+</div>
+<button class="ghost" id="skip" type="button" style="align-self:center">تجاوز الدور</button>
+<div id="bd"></div>
+</section>
+
+<section id="final" style="display:none">
+<p class="sub">انتهت المسابقة</p>
+<div id="wn"></div>
+<div id="rk"></div>
+<button class="ghost" id="again" type="button">جولة جديدة</button>
+</section>
+
+<div id="ov"><div id="ol"></div><div id="ob"></div><div id="os"></div></div>
+
+<script>
+/* ===== بنك الأسئلة: [نص السؤال, الإجابة الصحيحة, خطأ1, خطأ2, خطأ3, التفسير] =====
+   يمكن إضافة أسئلة أو تعديلها هنا مباشرة. الإجابة الصحيحة تُكتب أولًا وتُخلط تلقائيًا. */
+const PH=[
+{n:'الانطلاقة السريعة',d:'أسئلة سريعة على مفاهيم الوحدة',pts:10,t:20,ac:'#e0b04a',q:[
+['الاستهلاك هو:','استخدام الفرد للسلع والخدمات في تلبية حاجاته ورغباته','الاحتفاظ بالمال دون إنفاقه على الحاجات الأساسية','كسب المال من العمل ومصادر الدخل','الترويج للسلع والخدمات عبر وسائل الإعلام','الاستهلاك هو استخدام الفرد للسلع والخدمات في تلبية حاجاته ورغباته، مثل شراء الطعام والملابس والأدوات المدرسية.'],
+['الاستهلاك الرشيد هو:','إنفاق المال بحكمة وتوازن مع مراعاة الأولويات وتجنب الإسراف','إنفاق المال دون تخطيط أو تفكير','إنفاق المال على الرغبات فقط','إنفاق المال بسرعة حتى ينفد','الاستهلاك الرشيد يقوم على الحكمة والتوازن ومراعاة الأولويات وتجنب الإسراف.'],
+['أيٌّ مما يأتي مثال على الاستهلاك الكمالي؟','شراء لعبة إلكترونية جديدة','شراء الغذاء','التعليم','الرعاية الصحية','الاستهلاك الكمالي إنفاق على الرغبات مثل الرحلات وشراء الألعاب، أما الغذاء والتعليم فحاجات أساسية.'],
+['التخطيط المالي هو:','تنظيم المال وإدارته بتحديد الأهداف المالية ووضع خطة لإنفاقه وادخاره واستثماره','إنفاق المال لحظة الحصول عليه','ادخار المال فقط دون إنفاق','تقليد إنفاق الآخرين','التخطيط المالي يساعد على تلبية الحاجات وتحقيق الاستقرار المالي للفرد والأسرة.'],
+['أيٌّ مما يأتي ليس من طرائق التحكم في النفقات؟','تأجيل شراء الحاجات الضرورية','إعداد قائمة بالمصروفات المتوقعة','تسجيل المصروفات اليومية','المقارنة بين الأسعار قبل الشراء','الذي يمكن تأجيله هو شراء الرغبات غير الضرورية، أما الحاجات الضرورية فلا تُؤجَّل.'],
+['الميزانية الشخصية هي:','خطة مالية تبين كيفية توزيع الدخل على بنود الإنفاق خلال مدة زمنية محددة','قائمة بجميع ما يملكه الفرد','وسيلة لزيادة الأرباح دون اهتمام بالمصروف','تسجيل الديون المستحقة على الآخرين','الميزانية خطة لتنظيم الإنفاق والتحكم في النفقات خلال أسبوع أو شهر مثلًا.'],
+['العجز المالي هو:','المال المنفق أكثر من المال المتحصل عليه','المال المدخر للمستقبل','المال المخصص للصدقة','الدخل الشهري الثابت','عند إنفاق مال أكثر من الدخل نقع في العجز المالي، والميزانية تساعد على تجنبه.'],
+['أول خطوة في إعداد الميزانية الشخصية هي:','تحديد مقدار الدخل المتاح (المصروف)','تحديد مبلغ للادخار','تحديد النفقات غير الضرورية','مراجعة الميزانية وتعديلها','نبدأ بمعرفة الدخل المتاح، ثم النفقات الأساسية، ثم غير الضرورية، ثم الادخار، ثم المراجعة.'],
+['اتخاذ القرار المالي هو:','اختيار أفضل بديل من بين عدة بدائل بعد التفكير في نتائج كل خيار','اختيار أول خيار يظهر أمامنا','شراء ما يعجب الأصدقاء','إنفاق المال دون تفكير','القرار المالي الجيد يأتي بعد التفكير في النتائج المترتبة على كل خيار.'],
+['الإعلان هو:','وسيلة تهدف إلى الترويج للسلع والخدمات وإقناع المستهلك بشرائها','وسيلة لمنع الشراء والإنفاق','خطة لتوزيع الدخل','طريقة لتسجيل المصروفات','يعرض الإعلان السلع بصورة جاذبة عبر التلفاز والإنترنت ووسائل التواصل الاجتماعي.']]},
+{n:'القرار المالي',d:'مواقف حياتية: اختر القرار الأنسب',pts:20,t:30,ac:'#2ecc8f',q:[
+['وفاء تحصل على مصروفها الأسبوعي، وتحتاج دفترًا وعلبة ألوان للمدرسة، وتريد أيضًا لعبة إلكترونية جديدة. ما القرار الأنسب؟','تشتري الدفتر وعلبة الألوان أولًا، وتدخر جزءًا من المبلغ للعبة','تشتري اللعبة فورًا','تنفق المصروف كله فورًا دون تخطيط','تتجنب شراء أي شيء','الدفتر وعلبة الألوان حاجتان أساسيتان تُقدَّمان، أما اللعبة فرغبة يمكن تأجيلها.'],
+['أنفقت مريم مصروفها الشهري بسرعة ولا تعرف أين ذهب. ماذا تفعل في الشهر التالي؟','تسجل مصروفاتها اليومية وتحدد مبلغًا للإنفاق وآخر للادخار','تطلب مصروفًا إضافيًا','تنفق بالطريقة نفسها','تتوقف عن تسجيل النفقات','تسجيل المصروفات وتحديد مبلغ للإنفاق من طرائق التحكم في النفقات والتخطيط المالي.'],
+['خالد ينفق ماله دون تحكم، فاقترح عليه والده كتابة دخله ونفقاته في جدول وتقسيم المبلغ على أيام الشهر. ماذا يسمى هذا الحل؟','إعداد ميزانية شخصية','اتخاذ قرار عشوائي','الشراء المستدام','الاستهلاك الكمالي','الميزانية الشخصية تنظم الإنفاق وتوزع الدخل على بنود الإنفاق.'],
+['ادخرت فاطمة مبلغًا، وهي محتارة بين لعبة جديدة وحقيبة مدرسية تلزمها. ما أفضل تصرف؟','تقارن حاجتها لكل خيار وأثر قرارها في مالها، فتقدم الحقيبة','تشتري اللعبة لأنها تفضلها','تشتري الاثنين دون حساب','تقرر بالقرعة','القرار الرشيد يراعي مقدار الحاجة وتأثير القرار في المال، والحقيبة حاجة واللعبة رغبة.'],
+['شاهدت ليلى إعلانًا عن حذاء رياضي «لمدة محدودة»، ولديها حذاء بحالة جيدة. ما التصرف الأنسب؟','تفكر هل تحتاجه حقًا قبل الشراء ولا تنساق للإعلان','تشتريه فورًا حتى لا يفوتها العرض','تشتريه لأن الإعلان جذاب','تشتريه لأن صديقتها اشترته','الإعلانات تثير الرغبة وتشجع الشراء السريع، لذلك نفكر قبل الشراء هل هو حاجة حقيقية.']]},
+{n:'تحدّي التفكير',d:'تحليل الموقف وترتيب الأولويات',pts:30,t:40,ac:'#4db8ff',q:[
+['أيُّ السلوكين الآتيين غير رشيد؟','شراء سلعة فور رؤية إعلانها دون التفكير في الحاجة إليها','المقارنة بين الأسعار قبل الشراء','تسجيل المصروفات اليومية','تحديد مبلغ ثابت للإنفاق','الشراء السريع دون تفكير هو شراء عشوائي، أما المقارنة والتسجيل والتحديد فسلوكيات رشيدة.'],
+['أيُّ ترتيب لأولويات الإنفاق يقدم الحاجات على الرغبات؟','الغذاء ثم التعليم ثم رحلة ترفيهية','رحلة ترفيهية ثم الغذاء ثم التعليم','شراء لعبة ثم رحلة ثم الغذاء','رحلة ثم لعبة ثم التعليم','تحديد الأولويات يتطلب التمييز بين الحاجات والرغبات، فنقدّم الأشياء الأكثر أهمية.'],
+['أيُّ الترتيبات الآتية يمثل خطوات إعداد الميزانية الشخصية بالتسلسل الصحيح؟','الدخل المتاح، النفقات الأساسية، النفقات غير الضرورية، مبلغ الادخار، المراجعة','النفقات غير الضرورية، الدخل المتاح، الادخار، المراجعة، النفقات الأساسية','الادخار، المراجعة، الدخل المتاح، النفقات الأساسية، غير الضرورية','المراجعة، الدخل المتاح، النفقات غير الضرورية، الأساسية، الادخار','الخطوات: تحديد الدخل، فالنفقات الأساسية، فغير الضرورية، فتخصيص مبلغ للادخار، ثم مراجعة الميزانية وتعديلها.'],
+['كيف يؤثر الاستهلاك غير الرشيد في التخطيط المالي؟','يزيد النفقات ويؤدي إلى فشل عملية التخطيط','يساعد على الالتزام بالخطة المالية','يحقق التوازن بين الحاجات والرغبات','يسهم في تحقيق أهداف الادخار','الاستهلاك غير الرشيد يزيد النفقات ويُفشل التخطيط، أما الرشيد فيساعد على الالتزام بالخطة.'],
+['ما الأسئلة الأنسب لمن يريد شراءً مستدامًا؟','هل أحتاج المنتج حقًا؟ هل هو صديق للبيئة؟ هل يمكن استخدامه مدة طويلة؟','هل الإعلان جذاب؟ هل العرض محدود؟','هل اشتراه أصدقائي؟ هل هو شائع؟','هل سعره الأعلى؟ هل يظهر في الإعلانات كثيرًا؟','الشراء المستدام يراعي الحاجة وحماية البيئة وطول مدة الاستخدام واحترام المال والمجتمع.']]},
+{n:'النهائي الكبير',d:'موقف متكامل: اختر القرار ثم برّر أمام الصف',pts:30,bonus:20,t:60,ac:'#ff8a5c',q:[
+['سارة لديها 50 دينارًا، وتحتاج مستلزمات مدرسية، وترغب بلعبة، وشاهدت إعلانًا «لمدة محدودة». أيُّ قرار هو الأكثر رشدًا؟','تحدد نفقاتها الأساسية وتخصص جزءًا للادخار، وتؤجل الرغبات ولا تنساق للإعلان','تشتري اللعبة لأن العرض ينتهي قريبًا','تنفق المبلغ كله على ما يعجبها','تحتفظ بالمبلغ دون أي إنفاق','يجمع القرار بين التمييز بين الحاجات والرغبات، وتخصيص مبلغ للادخار، وعدم الانسياق وراء الإعلان.'],
+['محمد ينفق على رغباته دون تسجيل ما ينفقه، فينتهي مصروفه قبل نهاية الشهر. ما الحل الأمثل؟','يعد ميزانية شخصية تحدد دخله ونفقاته الأساسية ومبلغ الادخار، ويسجل مصروفاته اليومية','يطلب مبلغًا أكبر','يؤجل الحساب إلى الشهر القادم','يقلد إنفاق أصدقائه','الميزانية وتسجيل المصروفات من أهم طرائق التحكم في النفقات وتجنب العجز المالي.'],
+['يريد ياسر شراء حاسوب لوحي. أيُّ الخطوات يتبع لاتخاذ قرار مالي رشيد؟','يحدد حاجته، ويحدد الخيارات، ويقارن الأسعار، ويفكر في أثر القرار في ميزانيته، ثم يختار الأكثر فائدة والأقل تكلفة','يشتري أول جهاز يراه','يشتري الأغلى لأنه الأفضل دائمًا','يشتري ما يعلن عنه المؤثرون','خطوات القرار الرشيد: تحديد الحاجة، فالخيارات، فالمقارنة بين الأسعار، فأثر القرار في الميزانية، فاختيار الأكثر فائدة والأقل تكلفة.'],
+['يروّج مؤثر في وسائل التواصل لحذاء غالٍ ويشتريه زملاء كثيرون. ما التصرف الرشيد؟','لا يقلد، ويراجع حاجته وميزانيته قبل أي قرار','يشتريه لأن الجميع اشتراه','يشتريه فورًا ليشعر بالانتماء','يقارن نفسه بغيره ويشتريه','المقارنات الاجتماعية والرغبة في التقليد تؤثر في الإنفاق، والقرار الرشيد يعتمد على الحاجة والميزانية.'],
+['أنفقت رنا هذا الشهر أكثر من دخلها. ما المصطلح الذي يصف حالتها، وما التصرف المناسب؟','عجز مالي، وتراجع ميزانيتها وتؤجل الرغبات غير الضرورية وتقارن الأسعار','ادخار مالي، وتستمر في الإنفاق نفسه','استهلاك رشيد، ولا تغير شيئًا','شراء مستدام، وتزيد النفقات','الإنفاق أكثر من الدخل عجز مالي، ويُعالج بمراجعة الميزانية وتأجيل الرغبات والمقارنة بين الأسعار.']]}
+];
+
+/* ===== الصوت (Web Audio) ===== */
+let AC=null,master=null,volI=0,G=null,T=null,lastSec=99;
+const VOLS=[[1,'الصوت: عالٍ'],[.35,'الصوت: منخفض'],[0,'الصوت: مكتوم']];
+const $=i=>document.getElementById(i);
+function initAudio(){try{if(!AC){AC=new(window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.connect(AC.destination);master.gain.value=VOLS[volI][0]}if(AC.state==='suspended')AC.resume()}catch(e){}}
+function tone(f,d,type,v,at){if(!AC)return;const t=AC.currentTime+(at||0),o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v||.2,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(master);o.start(t);o.stop(t+d+.05)}
+const seq=(a,d,ty,v,gap)=>a.forEach((f,i)=>tone(f,d,ty,v,i*gap));
+const SND={
+start:()=>seq([392,523,659,784],.3,'triangle',.25,.11),
+turn:()=>{tone(660,.15,'sine',.25);tone(880,.35,'sine',.25,.13)},
+q:()=>tone(520,.12,'square',.07),
+tick:()=>tone(1000,.06,'square',.06),
+ok:()=>seq([523,659,784,1047],.2,'triangle',.25,.08),
+bad:()=>{tone(180,.35,'sawtooth',.16);tone(140,.4,'sawtooth',.16,.15)},
+phase:()=>{seq([262,330,392,523],.5,'sine',.2,.12);tone(131,.9,'triangle',.2)},
+win:()=>{seq([523,523,523,659,784,659,784,1047],.28,'triangle',.28,.16)}};
+const S=k=>{try{SND[k]()}catch(e){}};
+$('snd').onclick=()=>{initAudio();volI=(volI+1)%3;if(master)master.gain.value=VOLS[volI][0];$('snd').textContent=VOLS[volI][1];if(volI<2)S('tick')};
+
+/* ===== أدوات ===== */
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sh=(e,v)=>e.style.display=v?'':'none';
+function later(fn,ms){const g=G;setTimeout(()=>{if(G===g&&g&&!g.dead)fn()},ms)}
+function confirmBtn(b,fn){const orig=b.textContent;b.onclick=()=>{if(b.dataset.armed){delete b.dataset.armed;b.textContent=orig;fn()}else{b.dataset.armed='1';b.textContent='اضغط مرة أخرى للتأكيد';setTimeout(()=>{if(b.dataset.armed){delete b.dataset.armed;b.textContent=orig}},3000)}}}
+function pop(el){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}
+function ov(l,b,s,ms,cb){$('ol').textContent=l;$('ob').textContent=b;$('os').textContent=s||'';pop($('ob'));$('ov').classList.add('show');later(()=>$('ov').classList.remove('show'),ms-350);later(cb,ms)}
+function board(){const n=G.teams.length,cur=G.mode==='intro'?-1:G.turn%n;$('bd').innerHTML='';G.teams.forEach((t,i)=>{const d=document.createElement('div');d.className='chip'+(i===cur?' on':'');const a=document.createElement('span'),b=document.createElement('b');a.textContent=t.n;b.textContent=t.s;d.append(a,b);$('bd').append(d)})}
+const build=q=>{const o=shuffle([q[1],q[2],q[3],q[4]]);return{t:q[0],o,a:o.indexOf(q[1]),e:q[5]}};
+
+/* ===== الإعداد ===== */
+const DEF=['فريق النجوم','فريق العباقرة','فريق الرواد','',''];
+function buildFields(vals){$('fields').innerHTML='';for(let i=0;i<5;i++){const x=document.createElement('input');x.maxLength=20;x.placeholder='اسم الفريق '+(i+1)+(i>2?' (اختياري)':'');x.value=vals?vals[i]||'':DEF[i];$('fields').append(x)}}
+buildFields();
+$('start').onclick=()=>{initAudio();const names=[...$('fields').children].map(x=>x.value.trim()).filter(Boolean);
+if(names.length<3){$('msg').textContent='أدخل 3 فرق على الأقل';return}
+if(new Set(names).size!==names.length){$('msg').textContent='أسماء الفرق يجب ألا تتكرر';return}
+const c=Math.round(+$('tm').value)||0;
+G={teams:names.map(n=>({n,s:0})),ph:0,turn:0,qi:0,qs:[],mode:'intro',locked:false,dead:false,q:null,custom:c?Math.min(180,Math.max(5,c)):0};
+$('msg').textContent='';sh($('setup'),0);sh($('game'),0);$('game').style.display='flex';sh($('final'),0);initPhase()};
+
+/* ===== سير اللعبة ===== */
+function initPhase(){const ph=PH[G.ph],n=G.teams.length;document.documentElement.style.setProperty('--ac',ph.ac);
+const c=Math.floor(ph.q.length/n)*n;G.qs=shuffle(ph.q.slice()).slice(0,c).map(build);G.qi=0;G.mode='intro';board();
+$('qt').textContent='';$('opts').innerHTML='';sh($('fb'),0);sh($('skip'),0);
+ov('المرحلة '+(G.ph+1),ph.n,ph.d,2800,showTurn);S(G.ph?'phase':'start')}
+
+function showTurn(){G.mode='turn';const t=G.teams[G.turn%G.teams.length];board();ov('الدور الآن',t.n,'',1900,showQuestion);S('turn')}
+
+function showQuestion(){const ph=PH[G.ph],q=G.qs[G.qi],t=G.teams[G.turn%G.teams.length];
+G.mode='question';G.locked=false;G.q=q;board();
+$('tn').textContent=t.n;pop($('tn'));
+$('ph').textContent='المرحلة '+(G.ph+1)+': '+ph.n;$('pg').textContent='سؤال '+(G.qi+1)+' من '+G.qs.length;
+$('qt').textContent=q.t;$('pt').textContent=ph.pts+' نقطة'+(ph.bonus?' + '+ph.bonus+' للتبرير':'');
+$('opts').innerHTML='';q.o.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=x;b.onclick=()=>pick(i);$('opts').append(b)});
+sh($('fb'),0);sh($('skip'),1);S('q');startTimer(G.custom||ph.t)}
+
+function startTimer(sec){stopTimer();const end=Date.now()+sec*1000;lastSec=99;
+const upd=()=>{if(!G||G.mode!=='question'||G.locked){stopTimer();return}
+const r=Math.max(0,end-Date.now()),s=Math.ceil(r/1000);$('tb').style.width=(r/(sec*10))+'%';$('tt').textContent=s;$('tb').classList.toggle('low',s<=5);
+if(s<=5&&s>0&&s!==lastSec)S('tick');lastSec=s;
+if(r<=0){stopTimer();G.locked=true;finish(-1)}};
+upd();T=setInterval(upd,150)}
+function stopTimer(){if(T){clearInterval(T);T=null}}
+
+function pick(i){if(!G||G.mode!=='question'||G.locked)return;G.locked=true;stopTimer();finish(i)}
+
+function finish(i){const q=G.q,ph=PH[G.ph],t=G.teams[G.turn%G.teams.length];G.mode='feedback';
+[...$('opts').children].forEach((b,k)=>{b.disabled=true;if(k===q.a)b.classList.add('ok');else if(k===i)b.classList.add('bad')});
+sh($('skip'),0);const ok=i===q.a;let m;
+if(ok){if(!q.paid){q.paid=1;t.s+=ph.pts}S('ok');m='إجابة صحيحة! '+t.n+' تكسب '+ph.pts+' نقطة'}
+else{S('bad');m=i<0?'انتهى الوقت، لا نقاط لهذا السؤال':'إجابة غير صحيحة، لا نقاط. حاول مرة أخرى في الدور القادم'}
+$('fm').textContent=m;$('fm').className=ok?'good':'miss';
+$('fe').textContent=(ok?'':'الإجابة الصحيحة: '+q.o[q.a]+'. ')+q.e;
+board();sh($('fb'),1);
+if(ok&&ph.bonus){G.mode='verdict';$('fh').textContent='اطلب من الفريق تبرير قراره أمام الصف، ثم اعتمد التبرير أو لا';sh($('fh'),1);sh($('vy'),1);sh($('vn'),1);sh($('nx'),0)}
+else showNext()}
+
+function verdict(y){if(!G||G.mode!=='verdict')return;G.mode='feedback';const t=G.teams[G.turn%G.teams.length],b=PH[G.ph].bonus;
+if(y){t.s+=b;S('ok');$('fm').textContent='تم اعتماد التبرير! '+t.n+' تكسب '+b+' نقطة إضافية'}else{S('tick');$('fm').textContent='لم يُعتمد التبرير، تبقى نقاط القرار فقط'}
+board();showNext()}
+$('vy').onclick=()=>verdict(true);$('vn').onclick=()=>verdict(false);
+
+function showNext(){sh($('vy'),0);sh($('vn'),0);sh($('fh'),0);
+const lastQ=G.qi>=G.qs.length-1;$('nx').textContent=lastQ?(G.ph>=PH.length-1?'عرض النتيجة النهائية':'إلى المرحلة التالية'):'السؤال التالي';sh($('nx'),1)}
+
+$('nx').onclick=()=>{if(!G||G.mode!=='feedback')return;G.mode='busy';sh($('nx'),0);G.turn++;G.qi++;
+if(G.qi>=G.qs.length){G.ph++;if(G.ph>=PH.length)finalScreen();else initPhase()}else showTurn()};
+
+confirmBtn($('skip'),()=>{if(!G||G.mode!=='question'||G.locked)return;G.locked=true;stopTimer();G.turn++;showTurn()});
+confirmBtn($('endb'),()=>{if(G&&!G.dead&&G.mode!=='final')finalScreen()});
+
+/* ===== النهاية ===== */
+function finalScreen(){stopTimer();G.mode='final';G.dead=true;$('ov').classList.remove('show');sh($('game'),0);sh($('final'),1);
+const r=G.teams.slice().sort((a,b)=>b.s-a.s),max=r[0].s,w=r.filter(t=>t.s===max);
+$('wn').textContent=w.length>1?'تعادل بين: '+w.map(t=>t.n).join(' و '):'الفريق الفائز: '+w[0].n;
+$('rk').innerHTML='';let rank=0,prev=null;
+r.forEach((t,i)=>{if(t.s!==prev){rank=i+1;prev=t.s}const d=document.createElement('div');d.className='row'+(t.s===max?' first':'');const a=document.createElement('span'),b=document.createElement('b');a.textContent=rank+'. '+t.n;b.textContent=t.s+' نقطة';d.append(a,b);$('rk').append(d)});
+const cols=['#e0b04a','#2ecc8f','#4db8ff','#ff8a5c','#fff'];
+for(let i=0;i<50;i++){const c=document.createElement('i');c.className='cf';c.style.cssText='left:'+Math.random()*100+'vw;background:'+cols[i%5]+';animation-duration:'+(2.5+Math.random()*2.5)+'s;animation-delay:'+Math.random()*1.2+'s';document.body.append(c);setTimeout(()=>c.remove(),7000)}
+S('win')}
+
+confirmBtn($('again'),()=>{const v=G?G.teams.map(t=>t.n):null;if(G)G.dead=true;stopTimer();G=null;buildFields(v);$('ov').classList.remove('show');sh($('final'),0);sh($('game'),0);sh($('setup'),1);document.documentElement.style.setProperty('--ac','#e0b04a')});
+</script>
+</body>
+</html>
