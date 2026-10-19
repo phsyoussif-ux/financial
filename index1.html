@@ -44,11 +44,11 @@ h1{font-size:clamp(30px,4.5vw,64px);margin:.2em 0;color:var(--ac)}
 .opt:disabled{cursor:default;color:#d9dfe8}
 .opt.ok{background:#12805a;border-color:#2ecc8f;color:#fff}
 .opt.bad{background:#8a2a3a;border-color:#ff6b7f;color:#fff}
-#fb{text-align:center;display:none;min-height:11vh}
+#fb{text-align:center;background:#0b2244;border:2px solid var(--ac);border-radius:16px;padding:1vh 2vw}
 #fm{font-size:1.5em;font-weight:900}
 #fm.good{color:#2ecc8f}#fm.miss{color:#ff8a5c}
 #fe{max-width:1100px;margin:.2em auto .6em;opacity:.95}
-#fb .btn{margin:0 .4em}
+#fb .btn{margin:.3em .4em;font-size:1.15em}
 #bd{display:flex;flex-wrap:wrap;gap:1vw;justify-content:center;margin-top:auto}
 .chip{background:#0e2342;border:2px solid transparent;border-radius:14px;padding:.4em 1.2em;display:flex;gap:.9em;align-items:baseline;transition:transform .3s,background .3s;font-size:1.15em}
 .chip b{color:var(--ac);font-size:1.5em}
@@ -85,14 +85,14 @@ h1{font-size:clamp(30px,4.5vw,64px);margin:.2em 0;color:var(--ac)}
 <div id="banner"><small>الدور الآن</small><b id="tn"></b></div>
 <div id="qc"><div id="qt"></div><div id="pt"></div></div>
 <div class="tm"><div class="bar"><div id="tb"></div></div><span id="tt"></span></div>
-<div id="opts"></div>
-<div id="fb">
+<div id="fb" style="display:none">
 <div id="fm"></div><div id="fe"></div>
 <div id="fh"></div>
 <button class="btn green" id="vy" type="button">اعتماد الإجابة</button>
 <button class="ghost" id="vn" type="button">عدم الاعتماد</button>
 <button class="btn" id="nx" type="button">السؤال التالي</button>
 </div>
+<div id="opts"></div>
 <button class="ghost" id="skip" type="button" style="align-self:center">تجاوز الدور</button>
 <div id="bd"></div>
 </section>
@@ -214,7 +214,7 @@ if(ok){if(!q.paid){q.paid=1;t.s+=ph.pts}S('ok');m='إجابة صحيحة! '+t.n+
 else{S('bad');m=i<0?'انتهى الوقت، لا نقاط لهذا السؤال':'إجابة غير صحيحة، لا نقاط. حاول مرة أخرى في الدور القادم'}
 $('fm').textContent=m;$('fm').className=ok?'good':'miss';
 $('fe').textContent=(ok?'':'الإجابة الصحيحة: '+q.o[q.a]+'. ')+q.e;
-board();sh($('fb'),1);
+board();sh($('fb'),1);$('fb').scrollIntoView({block:'nearest',behavior:'smooth'});
 if(ok&&ph.bonus){G.mode='verdict';$('fh').textContent='اطلب من الفريق تبرير قراره أمام الصف، ثم اعتمد التبرير أو لا';sh($('fh'),1);sh($('vy'),1);sh($('vn'),1);sh($('nx'),0)}
 else showNext()}
 
